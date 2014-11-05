@@ -1,2 +1,6 @@
 *.py~
+*.txt~
 scratch.txt
+tutorial/
+a.out
+foo.plist
