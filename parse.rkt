@@ -28,21 +28,23 @@
          (list))]
     [(list) (list)]))
 
-(define offensive-phrases '("undefined"
-                            "point"
-                            "initialize"
-                            "division by zero"
-                            "insecure"
-                            ;; specific risky C stdlib functions:
-                            "getpw"
-                            "strcpy"
-                            "strcat"
-                            "vfork"
-                            ))
+;; Offensive phrases, each with a "weight" (how much it contributes to
+;; a bad score).
+(define offensive-phrases
+  (hash "undefined" 1
+        "pointer" 10
+        "initialize" 1
+        "division by zero" 1
+        "insecure" 10
+        ;; specific risky C stdlib functions:
+        "getpw" 10
+        "strcpy" 10
+        "strcat" 10
+        "vfork" 10))
 
 (define (offenses s)
-  (for/sum ([o offensive-phrases])
-    (length (regexp-match* o s))))
+  (for/sum ([(phrase weight) offensive-phrases])
+    (* weight (length (regexp-match* phrase s)))))
 
 (define (parse s)
   (let* ([xs (regexp-split "\n" s)]
@@ -50,7 +52,8 @@
          [xs (filter (negate summary?) xs)]
          [xs (gather-by header xs)]
          [dings (offenses s)]
-         [score (- 10 dings (length xs))] ;; 10 is perfect, can be negative
+         [perfect 10]
+         [score (- perfect dings (length xs))] ;; can be negative
          [report (hash 'score score
                        'items xs)])
     (write-json report)))
