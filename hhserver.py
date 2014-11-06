@@ -9,13 +9,16 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     rbufsize = 0
 
     def do_POST(self):
+        # Get interesting things from the request
+        self.content_length = int(self.headers.get("Content-Length","0"))
+        self.request_body = self.rfile.read(self.content_length)
+        # Determine our response body
+        self.response_body = self.request_body #just echo the request body
+        # Send our response
         self.send_response(200)
-        self.body = self.rfile.read(2)
-        self.to_send = "HTTP/1.1 200 OK\n\nThis is a response.\n"
-        self.send_header("Content-Length", str(len(self.to_send)))
+        self.send_header("Content-Length", str(len(self.response_body)))
         self.end_headers()
-        print self.body
-        self.wfile.write(self.to_send)
+        self.wfile.write(self.response_body)
 
 
 
