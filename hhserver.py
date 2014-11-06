@@ -36,15 +36,16 @@ def parse_request(request_body):
     """ take a request from the client, return the string to
     be used in the response body
     """
-    with open("bar.c", "w") as f:
+    filename = name_file()
+    with open(filename, "w") as f:
         f.write(request_body)
     try:
         clang_result = subprocess.check_output(["bash", "shim.sh"], stderr=subprocess.STDOUT, universal_newlines=True)
+    # TODO: must use new randomized filename as argument to shim.sh file!
     except subprocess.CalledProcessError as e:
         clang_result = "shim failed!"
-    os.remove("bar.c")
+    os.remove(filename)
     return clang_result
-    # TODO: create a tempfile, randomly generated name
 
 def main(server_class=BaseHTTPServer.HTTPServer,
         handler_class=APIHTTPRequestHandler):
