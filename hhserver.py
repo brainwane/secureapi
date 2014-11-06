@@ -3,6 +3,8 @@
 import BaseHTTPServer
 import subprocess
 import os
+import string
+import random
 
 PORT = 8000
 
@@ -21,6 +23,14 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(self.response_body)))
         self.end_headers()
         self.wfile.write(self.response_body)
+
+def name_file():
+    basechars = string.letters + string.digits
+    filename = ""
+    for i in range(20):
+        filename = filename + random.choice(basechars)
+    filename = filename + ".c"
+    return filename
 
 def parse_request(request_body):
     """ take a request from the client, return the string to
