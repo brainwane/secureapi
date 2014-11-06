@@ -11,9 +11,11 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_POST(self):
         self.send_response(200)
         self.body = self.rfile.read(2)
-#        self.send_header("Content-Length", str(2))
+        self.to_send = "HTTP/1.1 200 OK\n\nThis is a response.\n"
+        self.send_header("Content-Length", str(len(self.to_send)))
         self.end_headers()
-        self.wfile.write("HTTP/1.1 200 OK\n\nYo\n")
+        print self.body
+        self.wfile.write(self.to_send)
 
 
 
