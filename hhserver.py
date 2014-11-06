@@ -12,8 +12,8 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_response(200)
         self.body = self.rfile.read(2)
 #        self.send_header("Content-Length", str(2))
-#        self.end_headers()
-        self.wfile.write("yo")
+        self.end_headers()
+        self.wfile.write("HTTP/1.1 200 OK\n\nYo\n")
 
 
 
