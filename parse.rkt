@@ -29,10 +29,11 @@
     [(list) (list)]))
 
 (define (parse s)
-  (define xs (regexp-split "\n" s))
-  (define ys (filter (negate summary?) xs))
-  (define zs (gather-by header ys))
-  (write-json zs))
+  (let* ([xs (regexp-split "\n" s)]
+         [xs (dropf xs (negate header))]
+         [xs (filter (negate summary?) xs)]
+         [xs (gather-by header xs)])
+    (write-json xs)))
 
 ;; (parse (file->string "example.txt"))
 
