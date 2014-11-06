@@ -30,7 +30,15 @@
 
 (define offensive-phrases '("undefined"
                             "point"
-                            "initialize"))
+                            "initialize"
+                            "division by zero"
+                            "insecure"
+                            ;; specific risky C stdlib functions:
+                            "getpw"
+                            "strcpy"
+                            "strcat"
+                            "vfork"
+                            ))
 
 (define (offenses s)
   (for/sum ([o offensive-phrases])
@@ -42,7 +50,7 @@
          [xs (filter (negate summary?) xs)]
          [xs (gather-by header xs)]
          [dings (offenses s)]
-         [score (- 10 dings)] ;; 10 is perfect, can be negative
+         [score (- 10 dings (length xs))] ;; 10 is perfect, can be negative
          [report (hash 'score score
                        'items xs)])
     (write-json report)))
