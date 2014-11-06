@@ -1,15 +1,42 @@
-foo.c:1:1 desc desc desc
-blah blah blah
-blah blah blah
-blah blah blah
-
-foo.c:10:10 desc desc desc
-blah blah blah
-blah blah blah
-blah blah blah
-
-foo.c:20:20 desc desc desc
-blah blah blah
-blah blah blah
-blah blah blah
-
+foo.c:3:5: warning: no previous prototype for function 'foo' [-Wmissing-prototypes]
+int foo(int n, unsigned m)
+    ^
+foo.c:5:9: warning: comparison of integers of different signs: 'int' and 'unsigned int' [-Wsign-compare]
+  if (n < m)
+      ~ ^ ~
+foo.c:11:1: warning: return type of 'main' is not 'int' [-Wmain-return-type]
+void main()
+^
+foo.c:11:1: note: change return type to 'int'
+void main()
+^~~~
+int
+fix-it:"foo.c":{11:1-11:5}:"int"
+foo.c:14:7: warning: unused variable 'y' [-Wunused-variable]
+  int y = x/0;
+      ^
+foo.c:19:9: warning: unused variable 'q' [-Wunused-variable]
+    int q = *k;
+        ^
+foo.c:14:12: warning: division by zero is undefined [-Wdivision-by-zero]
+  int y = x/0;
+           ^~
+foo.c:16:6: warning: variable 'p' is uninitialized when used here [-Wuninitialized]
+    *p = 0;
+     ^
+foo.c:15:12: note: initialize the variable 'p' to silence this warning
+    char *p;
+           ^
+            = NULL
+fix-it:"foo.c":{15:12-15:12}:" = NULL"
+7 warnings generated.
+foo.c:14:7: warning: Value stored to 'y' during its initialization is never read
+  int y = x/0;
+      ^   ~~~
+foo.c:14:12: warning: Division by zero
+  int y = x/0;
+          ~^~
+foo.c:19:9: warning: Value stored to 'q' during its initialization is never read
+    int q = *k;
+        ^   ~~
+3 warnings generated.
