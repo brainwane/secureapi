@@ -28,12 +28,24 @@
          (list))]
     [(list) (list)]))
 
+(define offensive-phrases '("undefined"
+                            "point"
+                            "initialize"))
+
+(define (offenses s)
+  (for/sum ([o offensive-phrases])
+    (length (regexp-match* o s))))
+
 (define (parse s)
   (let* ([xs (regexp-split "\n" s)]
          [xs (dropf xs (negate header))]
          [xs (filter (negate summary?) xs)]
-         [xs (gather-by header xs)])
-    (write-json xs)))
+         [xs (gather-by header xs)]
+         [dings (offenses s)]
+         [score (- 10 dings)] ;; 10 is perfect, can be negative
+         [report (hash 'score score
+                       'items xs)])
+    (write-json report)))
 
 ;; (parse (file->string "example.txt"))
 
