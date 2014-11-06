@@ -29,7 +29,7 @@ def parse_request(request_body):
     with open("bar.c", "w") as f:
         f.write(request_body)
     try:
-        clang_result = subprocess.check_output(["bash", "shim.sh", "scan-build", "clang", "-Weverything", "bar.c"], stderr=subprocess.STDOUT, universal_newlines=True)
+        clang_result = subprocess.check_output(["bash", "shim.sh"], stderr=subprocess.STDOUT, universal_newlines=True)
     except subprocess.CalledProcessError as e:
         clang_result = "shim failed!"
     os.remove("bar.c")

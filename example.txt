@@ -1,0 +1,15 @@
+foo.c:1:1 desc desc desc
+blah blah blah
+blah blah blah
+blah blah blah
+
+foo.c:10:10 desc desc desc
+blah blah blah
+blah blah blah
+blah blah blah
+
+foo.c:20:20 desc desc desc
+blah blah blah
+blah blah blah
+blah blah blah
+
