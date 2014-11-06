@@ -6,8 +6,11 @@ PORT = 8000
 
 class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
+    rbufsize = 0
+
     def do_POST(self):
-#        self.body = self.rfile.read(2)
+        self.send_response(200)
+        self.body = self.rfile.read(2)
 #        self.send_header("Content-Length", str(2))
 #        self.end_headers()
         self.wfile.write("yo")
