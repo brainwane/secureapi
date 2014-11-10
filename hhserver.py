@@ -40,7 +40,7 @@ def parse_request(request_body):
     with open(filename, "w") as f:
         f.write(request_body)
     try:
-        clang_result = subprocess.check_output(["bash", "shim.sh"], stderr=subprocess.STDOUT, universal_newlines=True)
+        clang_result = subprocess.check_output(["bash", "shim.sh", filename], stderr=subprocess.STDOUT, universal_newlines=True)
     # TODO: must use new randomized filename as argument to shim.sh file!
     except subprocess.CalledProcessError as e:
         clang_result = "shim failed!"
