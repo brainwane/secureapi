@@ -5,6 +5,7 @@ import subprocess
 import os
 import string
 import random
+from urlparse import parse_qs
 
 PORT = 8000
 
@@ -15,9 +16,17 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_POST(self):
         # Get interesting things from the request
         self.content_length = int(self.headers.get("Content-Length","0"))
+        self.content_type = self.headers.get("Content-Type","text/plain")
         self.request_body = self.rfile.read(self.content_length)
+        # If a form submission we need to get the code from the `code`
+        # field, URL decoding it. urlparse.parse_qs does both for us.
+        if self.content_type == "application/x-www-form-urlencoded":
+            d = parse_qs(self.request_body)
+            self.code = d["code"][0]  # FIXME?
+        else:
+            self.code = self.request_body
         # Determine our response body
-        self.response_body = parse_request(self.request_body)
+        self.response_body = parse_request(self.code)
         # Send our response
         self.send_response(200)
         self.send_header("Content-Length", str(len(self.response_body)))

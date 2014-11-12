@@ -42,14 +42,13 @@ body {
     <form id='sourcecodetyped' method='post' > <!-- May use an onsubmit="analyze()" attribute on this form tag -->
       <p></p>
     Source code: <p>
-<textarea name='manually-input' placeholder="void test() {}" cols=80 rows=10 ></textarea>
+<textarea name='code' placeholder="void test() {}" cols=80 rows=10 ></textarea>
     <input type='submit' value='Submit code for analysis' />
       <p></p>
     </form>
 
     <form id='sourcecodefile' method='post' enctype=multipart/form-data >
       Source code file: <input type='file' name='fileofnames'></input>
-
       <input type='submit' value='Submit file' />
       </form>
   </div>
