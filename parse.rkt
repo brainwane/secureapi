@@ -11,10 +11,13 @@
      (hash 'file file 'line line 'col col 'desc desc)]
     [_ #f]))
             
-;; Is `s` a summary line such as "3 warnings generated."?
+;; Is `s` a line of summary information from scan-build that we want
+;; to ignore?
 (define (summary? s)
   (match s
-    [(pregexp "^\\d+ warnings? generated.") #t]
+    [(or (pregexp "^\\d+ warning")
+         (pregexp "^\\d+ error")
+         (pregexp "^scan-build:")) #t]
     [_ #f]))
 
 (define (gather-by f? xs)
