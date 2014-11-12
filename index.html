@@ -40,10 +40,11 @@ body {
 
 <div class="dataworkflow">
     <form id='sourcecodetyped' method='post' > <!-- May use an onsubmit="analyze()" attribute on this form tag -->
-      <p class="textnames">
-    Source code: <textarea name='manually-input' ></textarea>
+      <p></p>
+    Source code: <p>
+<textarea name='manually-input' placeholder="void test() {}" cols=50 rows=10 ></textarea>
     <input type='submit' value='Submit code for analysis' />
-      </p>
+      <p></p>
     </form>
 
     <form id='sourcecodefile' method='post' enctype=multipart/form-data >
