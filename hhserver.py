@@ -4,7 +4,7 @@ import BaseHTTPServer
 import subprocess
 import os
 import string
-from json import dumps, loads
+import json
 import random
 from urlparse import parse_qs
 
@@ -88,10 +88,14 @@ def parse_request(request_body):
     return clang_result
 
 def make_htmlpage(strinput):
-    json = loads(strinput)
-    jsonstring = dumps(json, indent=4, separators=(',', ': '))
-#    print jsonstring
-    return "<html><head></head><body><pre>" + jsonstring + "</pre></body></html>"
+    results = json.loads(strinput)
+#    jsonstring = dumps(json, indent=4, separators=(',', ': '))
+    score = str(results["score"])
+    errorlist = "<ul>"
+    for item in results["items"]:
+        errorlist += "<li><b>Column " + str(item["col"]) + ", line " + str(item["line"]) + "</b>: " + item["desc"] + "<br>in <pre><code>" + item["body"] + "</code></pre></li>"
+    errorlist += "</ul>"
+    return "<html><head></head><body>Your score is: " + score + errorlist + "</body></html>"
 
 def main(server_class=BaseHTTPServer.HTTPServer,
         handler_class=APIHTTPRequestHandler):
