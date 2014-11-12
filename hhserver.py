@@ -26,10 +26,17 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         else:
             self.code = self.request_body
         # Determine our response body
-        self.response_body = parse_request(self.code)
+        if self.path == "/api/v1/analyze/":
+            self.response_body = parse_request(self.code)
+        else:
+            self.response_body = "<html><head></head><body>This is your reportcard.</body></html>" # TODO -- parse_request, and then a bunch of other stuff for HTML version
         # Send our response
         self.send_response(200)
         self.send_header("Content-Length", str(len(self.response_body)))
+        if self.path == "/api/v1/analyze/":
+            self.send_header("Content-Type", "application/json")
+        else:
+            self.send_header("Content-Type", "text/html")
         self.end_headers()
         self.wfile.write(self.response_body)
 
