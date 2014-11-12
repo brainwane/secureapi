@@ -25,6 +25,10 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.wfile.write(self.response_body)
 
 def name_file():
+    """ Create a randomized filename so the user cannot count
+    on us always using the same filename. A mild measure against
+    some kinds of attacks.
+    """
     basechars = string.letters + string.digits
     filename = ""
     for i in range(20):
@@ -33,15 +37,15 @@ def name_file():
     return filename
 
 def parse_request(request_body):
-    """ take a request from the client, return the string to
-    be used in the response body
+    """ take a request from the client, run the C code through
+    the clang static analyzer via the shim shell script,
+    return the string to be used in the response body
     """
     filename = name_file()
     with open(filename, "w") as f:
         f.write(request_body)
     try:
         clang_result = subprocess.check_output(["bash", "shim.sh", filename], stderr=subprocess.STDOUT, universal_newlines=True)
-    # TODO: must use new randomized filename as argument to shim.sh file!
     except subprocess.CalledProcessError as e:
         clang_result = "shim failed!"
     os.remove(filename)
