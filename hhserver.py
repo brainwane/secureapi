@@ -92,8 +92,24 @@ def make_htmlpage(strinput):
 #    jsonstring = dumps(json, indent=4, separators=(',', ': '))
     score = str(results["score"])
     errorlist = "<ul>"
-    for item in results["items"]:
-        errorlist += "<li><b>Column " + str(item["col"]) + ", line " + str(item["line"]) + "</b>: " + item["desc"] + "<br>in <pre><code>" + item["body"] + "</code></pre></li>"
+    def collinecompare(a,b):
+        # compare line number
+        # if line number is the same, compare col number
+        aline, bline, acol, bcol = int(a["line"]), int(b["line"]), int(a["col"]), int(b["col"])
+        if aline < bline:
+            return -1
+        elif aline > bline:
+            return 1
+        else:
+            if acol < bcol:
+                return -1
+            elif acol > bcol:
+                return 1
+            else:
+                return 0
+    resultlist = sorted(results["items"], cmp=collinecompare)
+    for item in resultlist:
+        errorlist += "<li><b>Line " + str(item["line"]) + ", column " + str(item["col"]) +  "</b>: " + item["desc"] + "<br>in <pre><code>" + item["body"] + "</code></pre></li>"
     errorlist += "</ul>"
     return "<html><head></head><body>Your score is: " + score + errorlist + "</body></html>"
 
