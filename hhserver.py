@@ -4,6 +4,7 @@ import BaseHTTPServer
 import subprocess
 import os
 import string
+from json import dumps, loads
 import random
 from urlparse import parse_qs
 
@@ -26,10 +27,11 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         else:
             self.code = self.request_body
         # Determine our response body
+        self.json = parse_request(self.code)
         if self.path == "/api/v1/analyze/":
-            self.response_body = parse_request(self.code)
+            self.response_body = self.json
         else:
-            self.response_body = "<html><head></head><body>This is your reportcard.</body></html>" # TODO -- parse_request, and then a bunch of other stuff for HTML version
+            self.response_body = make_htmlpage(self.json)
         # Send our response
         self.send_response(200)
         self.send_header("Content-Length", str(len(self.response_body)))
@@ -84,6 +86,12 @@ def parse_request(request_body):
         clang_result = "shim failed!"
     os.remove(filename)
     return clang_result
+
+def make_htmlpage(strinput):
+    json = loads(strinput)
+    jsonstring = dumps(json, indent=4, separators=(',', ': '))
+#    print jsonstring
+    return "<html><head></head><body><pre>" + jsonstring + "</pre></body></html>"
 
 def main(server_class=BaseHTTPServer.HTTPServer,
         handler_class=APIHTTPRequestHandler):
