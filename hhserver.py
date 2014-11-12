@@ -33,6 +33,13 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(self.response_body)
 
+# add conditional
+# webservice goes down 1 path, browser-based requests down another
+
+# if self.path = /api/v1/analyze:
+#    do foo
+
+
     def do_GET(self):
         self.send_response(200)
         with open("index.html") as f:
@@ -41,6 +48,8 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(self.response_body)
 
+        # TODO: set up a different GET response for webservice requests
+        # that sends a capabilities doc suggesting a POST template
 
 def name_file():
     """ Create a randomized filename so the user cannot count
