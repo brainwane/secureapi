@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>Your C Report Card</title>
+</head>
+<body>
+
+  <div class="instructions" >
+
+      Please type in your C code or upload the file, and we'll check for security vulnerabilities.</div>
+
+<div class="dataworkflow">
+    <form id='sourcecodetyped' method='post' > <!-- May use an onsubmit="analyze()" attribute on this form tag -->
+      <p class="textnames">
+    Source code: <textarea name='manually-input' ></textarea>
+    <input type='submit' value='Submit code for analysis' />
+      </p>
+    </form>
+
+    <form id='sourcecodefile' method='post' enctype=multipart/form-data >
+      Source code file: <input type='file' name='fileofnames'></input>
+
+      <input type='submit' value='Submit file' />
+      </form>
+  </div>
+
+
+<section id="analysisResults">
+  <p>Your report card:</p>
+</section>
+
+
+</body>
+</html>

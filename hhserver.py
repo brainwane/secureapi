@@ -24,6 +24,15 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(self.response_body)
 
+    def do_GET(self):
+        self.send_response(200)
+        with open("index.html") as f:
+            self.response_body = f.read()
+        self.send_header("Content-Length", str(len(self.response_body)))
+        self.end_headers()
+        self.wfile.write(self.response_body)
+
+
 def name_file():
     basechars = string.letters + string.digits
     filename = ""
