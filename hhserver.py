@@ -67,8 +67,6 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
-
-
 def get_multipart_payload(s):
     """Assume that `s` is a multipart/form-data entity consisting of a
     boundary start, zero or more headers, a blank line, and then zero
@@ -154,4 +152,3 @@ def main(server_class=BaseHTTPServer.HTTPServer,
 
 if __name__ == '__main__':
     main()
-
