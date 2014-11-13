@@ -141,9 +141,9 @@ def make_htmlpage(strinput):
                 return 0
     resultlist = sorted(results["items"], cmp=collinecompare)
     for item in resultlist:
-        errorlist += "<li><b>Line " + str(item["line"]) + ", column " + str(item["col"]) +  "</b>: " + item["desc"] + "<br>in <pre><code>" + item["body"] + "</code></pre></li>"
+        errorlist += "<li><b>Line {line}, column {col}</b>: {prob}<br>in <pre><code>{snippet}</code></pre></li>".format(line=str(item["line"]), col=str(item["col"]), prob=item["desc"], snippet=item["body"])
     errorlist += "</ul>"
-    return "<html><head></head><body>Your score is: " + score + errorlist + "</body></html>"
+    return "<html><head></head><body>Your score is: <b>{score}</b> {details}</body></html>".format(score=score, details=errorlist)
 
 def main(server_class=BaseHTTPServer.HTTPServer,
         handler_class=APIHTTPRequestHandler):
