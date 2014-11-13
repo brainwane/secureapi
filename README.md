@@ -5,8 +5,8 @@ By [Sumana Harihareswara](http://harihareswara.net/ces.shtml) &
 [Greg Hendershott](http://www.greghendershott.com/) while at
 [Hacker School](http://hackerschool.com).
 
-Requires Python 2, Racket, bash, and a fairly flexible attitude to the
-importance of implementing GET. You can deploy it
+Requires Python 2.7, Racket 6.1, bash, and a fairly flexible attitude
+to the importance of implementing GET. You can deploy it
 [using Docker](https://github.com/greghendershott/secureapi-docker).
 
 Sample use
