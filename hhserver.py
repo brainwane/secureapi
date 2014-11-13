@@ -4,6 +4,7 @@ import BaseHTTPServer
 import subprocess
 import os
 import string
+import json
 import random
 from urlparse import parse_qs
 
@@ -23,24 +24,74 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         if self.content_type == "application/x-www-form-urlencoded":
             d = parse_qs(self.request_body)
             self.code = d["code"][0]  # FIXME?
+        # If a file upload, need to parse the multipart MIME format
+        elif self.content_type.startswith("multipart/form-data;"):
+            self.code = get_multipart_payload(self.request_body)
+        # Otherwise the code is simply the entire request body. (This
+        # is the case when the POST happens when using us as a web
+        # service.)
         else:
             self.code = self.request_body
         # Determine our response body
-        self.response_body = parse_request(self.code)
+        self.json = parse_request(self.code)
+        if self.path == "/api/v1/analyze/":
+            self.response_body = self.json
+        else:
+            self.response_body = make_htmlpage(self.json)
         # Send our response
         self.send_response(200)
         self.send_header("Content-Length", str(len(self.response_body)))
+        if self.path == "/api/v1/analyze/":
+            self.send_header("Content-Type", "application/json")
+        else:
+            self.send_header("Content-Type", "text/html")
         self.end_headers()
         self.wfile.write(self.response_body)
 
     def do_GET(self):
-        self.send_response(200)
-        with open("index.html") as f:
-            self.response_body = f.read()
-        self.send_header("Content-Length", str(len(self.response_body)))
-        self.end_headers()
-        self.wfile.write(self.response_body)
+        def respond_with_file(name, content_type):
+            self.send_response(200)
+            with open(name) as f:
+                self.response_body = f.read()
+                self.send_header("Content-Length", str(len(self.response_body)))
+                self.send_header("Content-Type", content_type)
+                self.end_headers()
+                self.wfile.write(self.response_body)
+        if self.path == '/':
+            respond_with_file("index.html", "text/html")
+        elif self.path == '/api/v1/analyze/':
+            respond_with_file("index.json", "application/json")
+        elif self.path == '/favicon.ico':
+            respond_with_file("favicon.ico", "image/x-icon")
+        else:
+            self.send_response(404)
+            self.end_headers()
 
+
+
+def get_multipart_payload(s):
+    """Assume that `s` is a multipart/form-data entity consisting of a
+    boundary start, zero or more headers, a blank line, and then zero
+    or more 'payload' lines until a matching closing boundary. Return
+    the payload.
+
+    """
+    lines = s.splitlines()
+    boundary = lines[0]
+    result = ""
+    ix = 0
+    # Skip everything up to the first blank line, after the
+    # boundary start and the headers.
+    while ix < len(lines) and lines[ix] != "":
+        ix = ix + 1
+    # Skip the blank line itself.
+    if ix < len(lines):
+        ix = ix + 1
+    # Use everything until a line that starts with boundary.
+    while ix < len (lines) and not lines[ix].startswith(boundary):
+        result = result + '\n' + lines[ix]
+        ix = ix + 1
+    return result
 
 def name_file():
     """ Create a randomized filename so the user cannot count
@@ -68,6 +119,31 @@ def parse_request(request_body):
         clang_result = "shim failed!"
     os.remove(filename)
     return clang_result
+
+def make_htmlpage(strinput):
+    results = json.loads(strinput)
+    score = str(results["score"])
+    errorlist = "<ul>"
+    def collinecompare(a,b):
+        # compare line number
+        # if line number is the same, compare col number
+        aline, bline, acol, bcol = int(a["line"]), int(b["line"]), int(a["col"]), int(b["col"])
+        if aline < bline:
+            return -1
+        elif aline > bline:
+            return 1
+        else:
+            if acol < bcol:
+                return -1
+            elif acol > bcol:
+                return 1
+            else:
+                return 0
+    resultlist = sorted(results["items"], cmp=collinecompare)
+    for item in resultlist:
+        errorlist += "<li><b>Line " + str(item["line"]) + ", column " + str(item["col"]) +  "</b>: " + item["desc"] + "<br>in <pre><code>" + item["body"] + "</code></pre></li>"
+    errorlist += "</ul>"
+    return "<html><head></head><body>Your score is: " + score + errorlist + "</body></html>"
 
 def main(server_class=BaseHTTPServer.HTTPServer,
         handler_class=APIHTTPRequestHandler):
