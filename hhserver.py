@@ -122,7 +122,6 @@ def parse_request(request_body):
 
 def make_htmlpage(strinput):
     results = json.loads(strinput)
-#    jsonstring = dumps(json, indent=4, separators=(',', ': '))
     score = str(results["score"])
     errorlist = "<ul>"
     def collinecompare(a,b):
