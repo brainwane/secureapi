@@ -26,29 +26,10 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.code = d["code"][0]  # FIXME?
         # If a file upload, need to parse the multipart MIME format
         elif self.content_type.startswith("multipart/form-data;"):
-            # Rest of the Content-Type header value is " boundary=X"
-            #
-            # Example:
-            #
-            # -----------------------------1821413621119340162376436
-            # Content-Disposition: form-data; name="fileofnames"; filename="foo.c"
-            # Content-Type: application/octet-stream
-            #
-            # main () {
-            #   char *p;
-            #   *p = 0;
-            #   printf("Blah blah blah");
-            #   strcpy( p, "hi");
-            #   vfork();
-            # }
-            #
-            # -----------------------------1821413621119340162376436--
-            #
-            # Regexp from Werkzeug for matching a boundary
-            # ('^[ -~]{0,200}[!-~]$')
-            # https://github.com/mitsuhiko/werkzeug/blob/e5e0da4bbf8082521739222f0c48361a09ba497e/werkzeug/formparser.py
-            self.code = "TODO: Discard the multipart boundaries and headers, use just the code 'payload'."
-            print self.code
+            self.code = get_multipart_payload(self.request_body)
+        # Otherwise the code is simply the entire request body. (This
+        # is the case when the POST happens when using us as a web
+        # service.)
         else:
             self.code = self.request_body
         # Determine our response body
@@ -67,13 +48,6 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(self.response_body)
 
-# add conditional
-# webservice goes down 1 path, browser-based requests down another
-
-# if self.path = /api/v1/analyze:
-#    do foo
-
-
     def do_GET(self):
         self.send_response(200)
         with open("index.html") as f:
@@ -84,6 +58,29 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
         # TODO: set up a different GET response for webservice requests
         # that sends a capabilities doc suggesting a POST template
+
+def get_multipart_payload(s):
+    """Assume that `s` is a multipart/form-data entity consisting of a
+    boundary start, zero or more headers, a blank line, and then zero
+    or more 'payload' lines until a matching closing boundary. Return
+    the payload.
+
+    """
+    lines = s.splitlines()
+    boundary = lines[0]
+    result = ""
+    ix = 0
+    # Skip everything up to the first blank line, after the
+    # boundary start and the headers.
+    while lines[ix] != "":
+        ix = ix + 1
+    # Skip the blank line itself.
+    ix = ix + 1
+    # Use everything until a line that starts with boundary.
+    while not lines[ix].startswith(boundary):
+        result = result + '\n' + lines[ix]
+        ix = ix + 1
+    return result
 
 def name_file():
     """ Create a randomized filename so the user cannot count
