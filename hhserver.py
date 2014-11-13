@@ -72,12 +72,13 @@ def get_multipart_payload(s):
     ix = 0
     # Skip everything up to the first blank line, after the
     # boundary start and the headers.
-    while lines[ix] != "":
+    while ix < len(lines) and lines[ix] != "":
         ix = ix + 1
     # Skip the blank line itself.
-    ix = ix + 1
+    if ix < len(lines):
+        ix = ix + 1
     # Use everything until a line that starts with boundary.
-    while not lines[ix].startswith(boundary):
+    while ix < len (lines) and not lines[ix].startswith(boundary):
         result = result + '\n' + lines[ix]
         ix = ix + 1
     return result
