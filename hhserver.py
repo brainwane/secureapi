@@ -24,6 +24,31 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         if self.content_type == "application/x-www-form-urlencoded":
             d = parse_qs(self.request_body)
             self.code = d["code"][0]  # FIXME?
+        # If a file upload, need to parse the multipart MIME format
+        elif self.content_type.startswith("multipart/form-data;"):
+            # Rest of the Content-Type header value is " boundary=X"
+            #
+            # Example:
+            #
+            # -----------------------------1821413621119340162376436
+            # Content-Disposition: form-data; name="fileofnames"; filename="foo.c"
+            # Content-Type: application/octet-stream
+            #
+# main () {
+            #   char *p;
+            #   *p = 0;
+            #   printf("Blah blah blah");
+            #   strcpy( p, "hi");
+            #   vfork();
+            # }
+            #
+            # -----------------------------1821413621119340162376436--
+
+            # Regexp from Werkzeug for matching a boundary
+            # ('^[ -~]{0,200}[!-~]$')
+            # https://github.com/mitsuhiko/werkzeug/blob/e5e0da4bbf8082521739222f0c48361a09ba497e/werkzeug/formparser.py
+            self.code = "TODO: Discard the multipart boundaries and headers, use just the code 'payload'."
+            print self.code
         else:
             self.code = self.request_body
         # Determine our response body
