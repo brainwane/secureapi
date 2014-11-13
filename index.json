@@ -1,0 +1,1 @@
+{ "capabilities" : "POST some bad C code to this path ('/api/v1/analyze') and we'll analyze it and return JSON of its security flaws."}
