@@ -34,7 +34,7 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             # Content-Disposition: form-data; name="fileofnames"; filename="foo.c"
             # Content-Type: application/octet-stream
             #
-# main () {
+            # main () {
             #   char *p;
             #   *p = 0;
             #   printf("Blah blah blah");
@@ -43,7 +43,7 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             # }
             #
             # -----------------------------1821413621119340162376436--
-
+            #
             # Regexp from Werkzeug for matching a boundary
             # ('^[ -~]{0,200}[!-~]$')
             # https://github.com/mitsuhiko/werkzeug/blob/e5e0da4bbf8082521739222f0c48361a09ba497e/werkzeug/formparser.py
