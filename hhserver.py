@@ -49,15 +49,23 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.wfile.write(self.response_body)
 
     def do_GET(self):
-        self.send_response(200)
-        with open("index.html") as f:
-            self.response_body = f.read()
-        self.send_header("Content-Length", str(len(self.response_body)))
-        self.end_headers()
-        self.wfile.write(self.response_body)
+        def respond_with_file(name, content_type):
+            self.send_response(200)
+            with open(name) as f:
+                self.response_body = f.read()
+                self.send_header("Content-Length", str(len(self.response_body)))
+                self.send_header("Content-Type", content_type)
+                self.end_headers()
+                self.wfile.write(self.response_body)
+        if self.path == '/':
+            respond_with_file("index.html", "text/html")
+        elif self.path == '/api/v1/analyze/':
+            respond_with_file("index.json", "application/json")
+        else:
+            self.send_response(404)
+            self.end_headers()
 
-        # TODO: set up a different GET response for webservice requests
-        # that sends a capabilities doc suggesting a POST template
+
 
 def get_multipart_payload(s):
     """Assume that `s` is a multipart/form-data entity consisting of a
