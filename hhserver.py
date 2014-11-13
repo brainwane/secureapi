@@ -61,6 +61,8 @@ class APIHTTPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             respond_with_file("index.html", "text/html")
         elif self.path == '/api/v1/analyze/':
             respond_with_file("index.json", "application/json")
+        elif self.path == '/favicon.ico':
+            respond_with_file("favicon.ico", "image/x-icon")
         else:
             self.send_response(404)
             self.end_headers()
