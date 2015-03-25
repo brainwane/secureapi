@@ -3,7 +3,7 @@ vulnerabilities, using clang's static analyzer for C family languages.
 
 By [Sumana Harihareswara](http://harihareswara.net/ces.shtml) &
 [Greg Hendershott](http://www.greghendershott.com/) while at
-[Hacker School](http://hackerschool.com).
+[the Recurse Center](http://recurse.com).
 
 Requires Python 2.7, Racket 6.1, bash, and a fairly flexible attitude
 to the importance of implementing GET. You can deploy it
