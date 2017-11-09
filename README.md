@@ -34,3 +34,5 @@ Sample use
     - In your browser, visit `http://localhost:8000/`. Supply code in
       the text box, or, upload a C file. Click submit to get the
       report as a web page.
+
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
